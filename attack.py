@@ -28,9 +28,9 @@ tf.flags.DEFINE_string(
 tf.flags.DEFINE_string(
     'output_dir', '', 'Output directory with images.')
 tf.flags.DEFINE_integer(
-    'image_width', 224, 'Width of each input images.')
+    'image_width', 299, 'Width of each input images.')
 tf.flags.DEFINE_integer(
-    'image_height', 224, 'Height of each input images.')
+    'image_height', 299, 'Height of each input images.')
 tf.flags.DEFINE_integer(
     'batch_size', 16, 'How many images process at one time.')
 tf.flags.DEFINE_integer(
@@ -114,9 +114,9 @@ def main(_):
         model = InceptionModel(nb_classes)
         # Run computation
         with tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)) as sess:
-            fgsm_model = DeepFool(model, sess=sess)
+            fgsm_model = MomentumIterativeMethod(model, sess=sess)
             # attack_params = {"eps":32.0 / 255.0, "clip_min": -1.0, "clip_max": 1.0}
-            attack_params = {"clip_min": -1.0, "clip_max": 1.0}
+            attack_params = {"eps": 0.5, "ord": np.inf, "decay_factor": 0.0, "clip_min": -5.0, "clip_max": 5.0}
             x_adv = fgsm_model.generate(x_input, **attack_params)
             saver = tf.train.Saver(slim.get_model_variables())
             saver.restore(sess, FLAGS.checkpoint_path)
