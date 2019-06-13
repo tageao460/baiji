@@ -79,8 +79,8 @@ class InceptionModel(Model):
     def __call__(self, x_input, return_logits=False):
         """Constructs model and return probabilities for given input."""
         reuse = True if self.built else None
-        with slim.arg_scope(vgg.vgg_arg_scope()):
-            _, end_points = vgg.vgg_16(
+        with slim.arg_scope(resnet_v1.resnet_arg_scope()):
+            _, end_points = resnet_v1.resnet_v1_50(
                 x_input, num_classes=self.nb_classes, is_training=False,
                 reuse=reuse)
         self.built = True
