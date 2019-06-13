@@ -8,7 +8,7 @@ from __future__ import print_function
 import os
 import numpy as np
 import tensorflow as tf
-from tensorflow.contrib.slim.nets import inception
+from tensorflow.contrib.slim.nets import inception,vgg,inception_v3,resnet_v1
 from scipy.misc import imread
 from scipy.misc import imresize
 from cleverhans.attacks import FastGradientMethod
@@ -79,8 +79,8 @@ class InceptionModel(Model):
     def __call__(self, x_input, return_logits=False):
         """Constructs model and return probabilities for given input."""
         reuse = True if self.built else None
-        with slim.arg_scope(inception.inception_v1_arg_scope()):
-            _, end_points = inception.inception_v1(
+        with slim.arg_scope(vgg.vgg_arg_scope()):
+            _, end_points = vgg.vgg_16(
                 x_input, num_classes=self.nb_classes, is_training=False,
                 reuse=reuse)
         self.built = True
