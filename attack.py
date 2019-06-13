@@ -82,10 +82,13 @@ class InceptionModel(Model):
     def __call__(self, x_input, return_logits=False):
         """Constructs model and return probabilities for given input."""
         reuse = True if self.built else None
-        with slim.arg_scope(inception.inception_v1_arg_scope()):
-            _, end_points = inception.inception_v1(
-                x_input, num_classes=self.nb_classes, is_training=False,
-                reuse=reuse)
+        # with slim.arg_scope(inception.inception_v1_arg_scope()):
+        #     _, end_points = inception.inception_v1(
+        #         x_input, num_classes=self.nb_classes, is_training=False,
+        #         reuse=reuse)
+        with slim.arg_scope(vgg.vgg_arg_scope()):
+            _, end_points = vgg.vgg_16(x_input, num_classes=self.nb_classes, is_training=False,
+                            reuse=reuse)
         self.built = True
         self.logits = end_points['Logits']
         # Strip off the extra reshape op at the output
@@ -115,7 +118,7 @@ def main(_):
         # Run computation
         with tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)) as sess:
             fgsm_model = MomentumIterativeMethod(model, sess=sess)
-            attack_params = {"eps":32.0 / 255.0, "clip_min": -0.5, "clip_max": 0.5}
+            attack_params = {"eps":32.0 / 255.0, "clip_min": -1.0, "clip_max": 1.0}
             # attack_params = {"eps": 0.5, "ord": np.inf, "decay_factor": 0.0, "clip_min": -5.0, "clip_max": 5.0}
             x_adv = fgsm_model.generate(x_input, **attack_params)
             saver = tf.train.Saver(slim.get_model_variables())
