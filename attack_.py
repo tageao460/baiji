@@ -117,7 +117,7 @@ def main(_):
  #           fgsm_model = ProjectedGradientDescent(model, sess=sess)
    #         fgsm_model = SPSA(model, sess=sess)
             fgsm_model = MomentumIterativeMethod(model, sess=sess)
-            fgsm_model= ElasticNetMethod(model, sess=sess)
+        #    fgsm_model= ElasticNetMethod(model, sess=sess)
  #           attack_params = {"eps":32.0 / 255.0, "clip_min": -1.0, "clip_max": 1.0}
             attack_params = {"eps":0.5, "ord":np.inf,
                                       "decay_factor":0.5,
