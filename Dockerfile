@@ -1,5 +1,5 @@
 FROM ubuntu
 ADD . /competition
-WDRKDIR /competition
+WORKDIR /competition
 
 ENTRYPOINT ["run.sh"]
