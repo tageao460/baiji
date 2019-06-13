@@ -8,10 +8,10 @@ from __future__ import print_function
 import os
 import numpy as np
 import tensorflow as tf
-from tensorflow.contrib.slim.nets import inception
+from tensorflow.contrib.slim.nets import vgg,inception
 from scipy.misc import imread
 from scipy.misc import imresize
-from cleverhans.attacks import ElasticNetMethod, LBFGS
+from cleverhans.attacks import FastGradientMethod
 from cleverhans.attacks import Model
 from PIL import Image
 
@@ -82,6 +82,8 @@ class InceptionModel(Model):
             _, end_points = inception.inception_v1(
                 x_input, num_classes=self.nb_classes, is_training=False,
                 reuse=reuse)
+        with slim.arg_scope(vgg.vgg_arg_scope()):
+            _, end_points = vgg.vgg_16(x_input, num_classes=self.nb_classes, is_training=False)
         self.built = True
         self.logits = end_points['Logits']
         # Strip off the extra reshape op at the output
@@ -111,7 +113,7 @@ def main(_):
         # Run computation
         with tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)) as sess:
             # fgsm_model = FastGradientMethod(model, sess=sess)
-            fgsm_model = ElasticNetMethod(model, sess=sess)
+            fgsm_model = FastGradientMethod(model, sess=sess)
             attack_params = {"eps":32.0 / 255.0, "clip_min": -1.0, "clip_max": 1.0}
             x_adv = fgsm_model.generate(x_input, **attack_params)
             saver = tf.train.Saver(slim.get_model_variables())
