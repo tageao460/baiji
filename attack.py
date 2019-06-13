@@ -11,7 +11,7 @@ import tensorflow as tf
 from tensorflow.contrib.slim.nets import inception
 from scipy.misc import imread
 from scipy.misc import imresize
-from cleverhans.attacks import fgm
+from cleverhans.attacks import VirtualAdversarialMethod
 from cleverhans.attacks import Model
 from PIL import Image
 
@@ -25,9 +25,9 @@ tf.flags.DEFINE_string(
 tf.flags.DEFINE_string(
     'output_dir', '', 'Output directory with images.')
 tf.flags.DEFINE_integer(
-    'image_width', 224, 'Width of each input images.')
+    'image_width', 299, 'Width of each input images.')
 tf.flags.DEFINE_integer(
-    'image_height', 224, 'Height of each input images.')
+    'image_height', 299, 'Height of each input images.')
 tf.flags.DEFINE_integer(
     'batch_size', 16, 'How many images process at one time.')
 tf.flags.DEFINE_integer(
@@ -111,7 +111,7 @@ def main(_):
         model = InceptionModel(nb_classes)
         # Run computation
         with tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)) as sess:
-            fgsm_model = fgm(model, sess=sess)
+            fgsm_model = VirtualAdversarialMethod(model, sess=sess)
             attack_params = {"eps":32.0 / 255.0, "clip_min": -1.0, "clip_max": 1.0}
             x_adv = fgsm_model.generate(x_input, **attack_params)
             saver = tf.train.Saver(slim.get_model_variables())
