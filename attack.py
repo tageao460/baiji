@@ -11,9 +11,15 @@ import tensorflow as tf
 from tensorflow.contrib.slim.nets import inception
 from scipy.misc import imread
 from scipy.misc import imresize
-from cleverhans.attacks import FastGradientMethod,Semantic
+from cleverhans.attacks import FastGradientMethod,Semantic,MomentumIterativeMethod
 from cleverhans.attacks import Model
 from PIL import Image
+
+from advbox.attacks.saliency import JSMA
+from advbox.models.tensorflow import TensorflowModel
+
+
+
 
 slim = tf.contrib.slim
 
@@ -24,9 +30,9 @@ tf.flags.DEFINE_string(
 tf.flags.DEFINE_string(
     'output_dir', '', 'Output directory with images.')
 tf.flags.DEFINE_integer(
-    'image_width', 224, 'Width of each input images.')
+    'image_width', 299, 'Width of each input images.')
 tf.flags.DEFINE_integer(
-    'image_height', 224, 'Height of each input images.')
+    'image_height', 299, 'Height of each input images.')
 tf.flags.DEFINE_integer(
     'batch_size', 16, 'How many images process at one time.')
 tf.flags.DEFINE_integer(
@@ -106,24 +112,38 @@ def main(_):
 
     with tf.Graph().as_default():
         # Prepare graph
-        x_input = tf.placeholder(tf.float32, shape=batch_shape)
-        model = InceptionModel(nb_classes)
+        #x_input = tf.placeholder(tf.float32, shape=batch_shape)
+        #model = InceptionModel(nb_classes)
         # Run computation
         with tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)) as sess:
 
             #fgsm_model = FastGradientMethod(model,sess=sess)
             #attack_params = {"eps":32.0 / 255.0, "clip_min": -1.0, "clip_max": 1.0}
 
-            fgsm_model = Semantic(model, sess=sess)
-            attack_params = {"center": False}
+            # fgsm_model = Semantic(model, sess=sess)   failed
+            # attack_params = {"center": False}
 
-
-            x_adv = fgsm_model.generate(x_input, **attack_params)
-            saver = tf.train.Saver(slim.get_model_variables())
-            saver.restore(sess, FLAGS.checkpoint_path)
+            # fgsm_model =  MomentumIterativeMethod(model,sess)
+            # attack_params = {"eps":32.0 / 255.0, "clip_min": -1.0, "clip_max": 1.0}
+            # x_adv = fgsm_model.generate(x_input, **attack_params)  #生成方差
+            #
+            # saver = tf.train.Saver(slim.get_model_variables())
+            # saver.restore(sess, FLAGS.checkpoint_path)
 
             for filenames, images in load_images(FLAGS.input_dir, batch_shape):
-                adv_images = sess.run(x_adv, feed_dict={x_input: images})
+                #adv_images = sess.run(x_adv, feed_dict={x_input: images})
+
+                m = TensorflowModel(
+                    sess,
+                    images,
+                    None,
+                    None,
+                    None,
+                    bounds=(0, 255),
+                    channel_axis=3,
+                    preprocess=None)
+                adv_images = JSMA()       # 生成的图片
+
                 save_images(adv_images, filenames, FLAGS.output_dir)
 
 
