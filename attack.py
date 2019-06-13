@@ -28,9 +28,9 @@ tf.flags.DEFINE_string(
 tf.flags.DEFINE_string(
     'output_dir', '', 'Output directory with images.')
 tf.flags.DEFINE_integer(
-    'image_width', 299, 'Width of each input images.')
+    'image_width', 224, 'Width of each input images.')
 tf.flags.DEFINE_integer(
-    'image_height', 299, 'Height of each input images.')
+    'image_height', 224, 'Height of each input images.')
 tf.flags.DEFINE_integer(
     'batch_size', 16, 'How many images process at one time.')
 tf.flags.DEFINE_integer(
