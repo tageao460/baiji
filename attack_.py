@@ -15,7 +15,7 @@ from cleverhans.attacks import Noise
 from cleverhans.attacks import ProjectedGradientDescent
 from cleverhans.attacks import SPSA
 from cleverhans.attacks import SaliencyMapMethod
-from cleverhans.attacks import ElasticNetMethod
+from cleverhans.attacks import MomentumIterativeMethod
 from PIL import Image
 
 slim = tf.contrib.slim
@@ -116,10 +116,12 @@ def main(_):
  #           fgsm_model = Noise(model, sess=sess)
  #           fgsm_model = ProjectedGradientDescent(model, sess=sess)
    #         fgsm_model = SPSA(model, sess=sess)
-            fgsm_model = SaliencyMapMethod(model, sess=sess)
+            fgsm_model = MomentumIterativeMethod(model, sess=sess)
             fgsm_model= ElasticNetMethod(model, sess=sess)
  #           attack_params = {"eps":32.0 / 255.0, "clip_min": -1.0, "clip_max": 1.0}
-            attack_params = {}
+            attack_params = {"eps":0.5, "ord":np.inf,
+                                      "decay_factor":0.5,
+                                      "clip_min":-5.0, "clip_max":5.0}
             x_adv = fgsm_model.generate(x_input, **attack_params)
             saver = tf.train.Saver(slim.get_model_variables())
             saver.restore(sess, FLAGS.checkpoint_path)
