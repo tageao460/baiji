@@ -11,8 +11,10 @@
 INPUT_DIR=$1
 OUTPUT_DIR=$2
 TMP_OUTPUT_DIR_1=tmp_output.1
+TMP_OUTPUT_DIR_2=tmp_output.2
 
 mkdir -p $TMP_OUTPUT_DIR_1
+mkdir -p $TMP_OUTPUT_DIR_2
 
 python attack.py \
   --input_dir="${INPUT_DIR}" \
@@ -21,7 +23,11 @@ python attack.py \
 
 python attack.py \
   --input_dir="${TMP_OUTPUT_DIR_1}" \
-  --output_dir="${OUTPUT_DIR}" \
+  --output_dir="${TMP_OUTPUT_DIR_2}" \
   --checkpoint_path=./models/inception_v1/inception_v1.ckpt
 
+python attack.py \
+  --input_dir="${TMP_OUTPUT_DIR_2}" \
+  --output_dir="${OUTPUT_DIR}" \
+  --checkpoint_path=./models/inception_v1/inception_v1.ckpt
 
