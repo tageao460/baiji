@@ -82,13 +82,10 @@ class InceptionModel(Model):
     def __call__(self, x_input, return_logits=False):
         """Constructs model and return probabilities for given input."""
         reuse = True if self.built else None
-        # with slim.arg_scope(inception.inception_v1_arg_scope()):
-        #     _, end_points = inception.inception_v1(
-        #         x_input, num_classes=self.nb_classes, is_training=False,
-        #         reuse=reuse)
-        with slim.arg_scope(vgg.vgg_arg_scope()):
-            _, end_points = vgg.vgg_16(x_input, num_classes=self.nb_classes, is_training=False,
-                            reuse=reuse)
+        with slim.arg_scope(inception.inception_v1_arg_scope()):
+            _, end_points = inception.inception_v1(
+                x_input, num_classes=self.nb_classes, is_training=False,
+                reuse=reuse)
         self.built = True
         self.logits = end_points['Logits']
         # Strip off the extra reshape op at the output

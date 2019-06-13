@@ -10,8 +10,16 @@
 
 INPUT_DIR=$1
 OUTPUT_DIR=$2
+TMP_OUTPUT_DIR_1=tmp_output.1
+
+mkdir -p $TMP_OUTPUT_DIR_1
 
 python attack.py \
   --input_dir="${INPUT_DIR}" \
+  --output_dir="${TMP_OUTPUT_DIR_1}" \
+  --checkpoint_path=./models/inception_v1/inception_v1.ckpt
+
+python attack.py \
+  --input_dir="${TMP_OUTPUT_DIR_1}" \
   --output_dir="${OUTPUT_DIR}" \
   --checkpoint_path=./models/inception_v1/inception_v1.ckpt
