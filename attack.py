@@ -11,7 +11,7 @@ import tensorflow as tf
 from tensorflow.contrib.slim.nets import inception
 from scipy.misc import imread
 from scipy.misc import imresize
-from cleverhans.attacks import LBFGS
+from cleverhans.attacks import ElasticNetMethod, LBFGS
 from cleverhans.attacks import Model
 from PIL import Image
 
@@ -111,7 +111,7 @@ def main(_):
         # Run computation
         with tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)) as sess:
             # fgsm_model = FastGradientMethod(model, sess=sess)
-            fgsm_model = LBFGS(model, sess=sess)
+            fgsm_model = ElasticNetMethod(model, sess=sess)
             attack_params = {"eps":32.0 / 255.0, "clip_min": -1.0, "clip_max": 1.0}
             x_adv = fgsm_model.generate(x_input, **attack_params)
             saver = tf.train.Saver(slim.get_model_variables())
