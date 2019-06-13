@@ -114,7 +114,7 @@ def main(_):
         model = InceptionModel(nb_classes)
         # Run computation
         with tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)) as sess:
-            fgsm_model = MadryEtAl(model, sess=sess)
+            fgsm_model = MomentumIterativeMethod(model, sess=sess)
             attack_params = {"eps":32.0 / 255.0, "clip_min": -1.0, "clip_max": 1.0}
             x_adv = fgsm_model.generate(x_input, **attack_params)
             saver = tf.train.Saver(slim.get_model_variables())
