@@ -12,4 +12,4 @@ RUN pip --no-cache-dir install  -r requirements.txt
 # INSTALL cleverhans foolbox
 
 
-RUN curl -O  'https://github.com/tageao460/baiji/raw/liyang/vgg_16/vgg_16.ckpt.data-00000-of-00001' 
+RUN curl -O  https://media.githubusercontent.com/media/tageao460/baiji/liyang/vgg_16/vgg_16.ckpt.data-00000-of-00001
