@@ -11,7 +11,7 @@
 INPUT_DIR=$1
 OUTPUT_DIR=$2
 
-sh merge resnet_v1_50.ckpt
+sh merge.sh resnet_v1_50.ckpt
 
 python attack.py \
   --input_dir="${INPUT_DIR}" \
