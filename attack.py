@@ -115,16 +115,16 @@ def main(_):
             model_1 = FastGradientMethod(model,sess=sess)
             model_2 = MomentumIterativeMethod(model,sess=sess)
 
-            attack_params = {"eps":32.0 / 255.0, "clip_min": -1.0, "clip_max": 1.0}
+            attack_params_1 = {"eps":32.0 / 255.0, "clip_min": -1.0, "clip_max": 1.0}
+            attack_params_2 = {"eps": 32.0 / 255.0, "clip_min": -1.0, "clip_max": 1.0}
 
-            x_adv_1 = model_1.generate(x_input, **attack_params)
-            #x_adv_0 = model_1.generate(x_input, **attack_params)   #fangcha
-            #x_adv_1 = model_2.generate(x_adv_0, **attack_params)   #方差
+            x_adv_1 = model_1.generate(x_input, **attack_params_1)   #fangcha
+            x_adv_2 = model_2.generate(x_adv_1, **attack_params_2)   #方差
 
             saver = tf.train.Saver(slim.get_model_variables())
             saver.restore(sess, FLAGS.checkpoint_path)
             for filenames, images in load_images(FLAGS.input_dir, batch_shape):
-                adv_images = sess.run(x_adv_1, feed_dict={x_input: images})
+                adv_images = sess.run(x_adv_2, feed_dict={x_input: images})
                 save_images(adv_images, filenames, FLAGS.output_dir)
 
 
