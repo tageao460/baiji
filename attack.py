@@ -8,7 +8,7 @@ from __future__ import print_function
 import os
 import numpy as np
 import tensorflow as tf
-from tensorflow.contrib.slim.nets import inception
+from tensorflow.contrib.slim.nets import inception,resnet_v1
 from scipy.misc import imread
 from scipy.misc import imresize
 from cleverhans.attacks import FastGradientMethod
@@ -78,14 +78,14 @@ class InceptionModel(Model):
     def __call__(self, x_input, return_logits=False):
         """Constructs model and return probabilities for given input."""
         reuse = True if self.built else None
-        with slim.arg_scope(inception.inception_v3_arg_scope()):
-            _, end_points = inception.inception_v3(
+        with slim.arg_scope(resnet_v1.resnet_arg_scope()):
+            _, end_points = resnet_v1.resnet_v1_50(
                 x_input, num_classes=self.nb_classes, is_training=False,
                 reuse=reuse)
         self.built = True
         self.logits = end_points['Logits']
         # Strip off the extra reshape op at the output
-        self.probs = end_points['Predictions'].op.inputs[0]
+        self.probs = end_points['predictions'].op.inputs[0]
         if return_logits:
             return self.logits
         else:
