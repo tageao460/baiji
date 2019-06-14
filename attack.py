@@ -18,7 +18,12 @@ from cleverhans.attacks import MomentumIterativeMethod
 from cleverhans.attacks import DeepFool
 from cleverhans.attacks import Model
 from PIL import Image
-
+from cleverhans.attacks import BasicIterativeMethod
+from cleverhans.attacks import VirtualAdversarialMethod
+from cleverhans.attacks import SaliencyMapMethod
+from cleverhans.attacks import ElasticNetMethod
+from cleverhans.attacks import FastFeatureAdversaries
+from cleverhans.attacks import SpatialTransformationMethod
 slim = tf.contrib.slim
 
 tf.flags.DEFINE_string(
@@ -114,8 +119,8 @@ def main(_):
         model = InceptionModel(nb_classes)
         # Run computation
         with tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)) as sess:
-            fgsm_model = MomentumIterativeMethod(model, sess=sess)
-            attack_params = {"eps":34.0 / 255.0,"eps_iter": 0.06, "nb_iter": 20, "decay_factor": 1.0, "clip_min": -1.0, "clip_max": 1.0}
+            fgsm_model = VirtualAdversarialMethod(model, sess=sess)
+            attack_params = {"eps":32.0 / 255.0, "nb_iter": 10, "clip_min": -1.0, "clip_max": 1.0}
             # attack_params = {"eps": 0.5, "ord": np.inf, "decay_factor": 0.0, "clip_min": -5.0, "clip_max": 5.0}
             x_adv = fgsm_model.generate(x_input, **attack_params)
             saver = tf.train.Saver(slim.get_model_variables())
@@ -128,3 +133,6 @@ def main(_):
 
 if __name__ == '__main__':
     tf.app.run()
+
+            # fgsm_model = MomentumIterativeMethod(model, sess=sess)
+            # attack_params = {"eps":34.0 / 255.0,"eps_iter": 0.06, "nb_iter": 20, "decay_factor": 1.0, "clip_min": -1.0, "clip_max": 1.0}
