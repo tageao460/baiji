@@ -8,4 +8,4 @@ for((i=0; i<n; ++i)); do
   files="$files $1.$i"
 done
 
-cat $files > merge.txt
+cat $files > inception_v3.ckpt
