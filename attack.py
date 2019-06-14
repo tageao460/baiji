@@ -119,8 +119,8 @@ def main(_):
         model = InceptionModel(nb_classes)
         # Run computation
         with tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)) as sess:
-            fgsm_model = VirtualAdversarialMethod(model, sess=sess)
-            attack_params = {"eps":462.0 / 255.0, "nb_iter": 1, "clip_min": -1.0, "clip_max": 1.0}
+            fgsm_model = ElasticNetMethod(model, sess=sess)
+            attack_params = {"clip_min": -1.0, "clip_max": 1.0}
             # attack_params = {"eps": 0.5, "ord": np.inf, "decay_factor": 0.0, "clip_min": -5.0, "clip_max": 5.0}
             x_adv = fgsm_model.generate(x_input, **attack_params)
             saver = tf.train.Saver(slim.get_model_variables())
