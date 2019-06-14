@@ -15,10 +15,6 @@ from cleverhans.attacks import FastGradientMethod,Semantic,MomentumIterativeMeth
 from cleverhans.attacks import Model
 from PIL import Image
 
-from advbox.attacks.saliency import JSMA
-from advbox.models.tensorflow import TensorflowModel
-
-
 
 slim = tf.contrib.slim
 
@@ -117,12 +113,13 @@ def main(_):
         with tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)) as sess:
 
             model_1 = FastGradientMethod(model,sess=sess)
-            model_2 =  MomentumIterativeMethod(model,sess)
+            model_2 = MomentumIterativeMethod(model,sess=sess)
 
             attack_params = {"eps":32.0 / 255.0, "clip_min": -1.0, "clip_max": 1.0}
 
-            x_adv_0 = model_1.generate(x_input, **attack_params)  #生成方差
-            x_adv_1 = model_2.generate(x_adv_0, **attack_params)
+            x_adv_1 = model_1.generate(x_input, **attack_params)
+            #x_adv_0 = model_1.generate(x_input, **attack_params)   #fangcha
+            #x_adv_1 = model_2.generate(x_adv_0, **attack_params)   #方差
 
             saver = tf.train.Saver(slim.get_model_variables())
             saver.restore(sess, FLAGS.checkpoint_path)
