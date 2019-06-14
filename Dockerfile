@@ -12,4 +12,4 @@ RUN pip --no-cache-dir install  -r requirements.txt
 # INSTALL cleverhans foolbox
 
 RUN mkdir ./models
-RUN curl -O  'https://media.githubusercontent.com/media/tageao460/baiji/xining/inception_v2.ckpt' -C ./models/
+RUN curl -O  https://media.githubusercontent.com/media/tageao460/baiji/xining/inception_v2.ckpt -C ./models/
