@@ -11,7 +11,7 @@ import tensorflow as tf
 from tensorflow.contrib.slim.nets import inception
 from scipy.misc import imread
 from scipy.misc import imresize
-from cleverhans.attacks import FastGradientMethod
+from cleverhans.attacks import FastGradientMethod,MomentumIterativeMethod
 from cleverhans.attacks import Model
 from PIL import Image
 
@@ -111,8 +111,15 @@ def main(_):
         # Run computation
         with tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)) as sess:
             fgsm_model = FastGradientMethod(model, sess=sess)
-            attack_params = {"eps":32.0 / 255.0, "clip_min": -1.0, "clip_max": 1.0}
-            x_adv = fgsm_model.generate(x_input, **attack_params)
+            fgsm_params = {"eps":32.0 / 255.0, "clip_min": -1.0, "clip_max": 1.0}
+
+            moment_model = MomentumIterativeMethod(model, sess=sess)
+            moment_params = {"eps":32.0 / 255.0, "clip_min": -1.0, "clip_max": 1.0}
+
+            adv_temp = fgsm_model.generate(x_input, **fgsm_params)
+            x_adv = moment_model.generate(adv_temp, **moment_params)
+
+
             saver = tf.train.Saver(slim.get_model_variables())
             saver.restore(sess, FLAGS.checkpoint_path)
 
