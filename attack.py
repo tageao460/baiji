@@ -20,7 +20,6 @@ from advbox.models.tensorflow import TensorflowModel
 
 
 
-
 slim = tf.contrib.slim
 
 tf.flags.DEFINE_string(
@@ -112,38 +111,23 @@ def main(_):
 
     with tf.Graph().as_default():
         # Prepare graph
-        #x_input = tf.placeholder(tf.float32, shape=batch_shape)
-        #model = InceptionModel(nb_classes)
+        x_input = tf.placeholder(tf.float32, shape=batch_shape)
+        model = InceptionModel(nb_classes)
         # Run computation
         with tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)) as sess:
 
-            #fgsm_model = FastGradientMethod(model,sess=sess)
-            #attack_params = {"eps":32.0 / 255.0, "clip_min": -1.0, "clip_max": 1.0}
+            model_1 = FastGradientMethod(model,sess=sess)
+            model_2 =  MomentumIterativeMethod(model,sess)
 
-            # fgsm_model = Semantic(model, sess=sess)   failed
-            # attack_params = {"center": False}
+            attack_params = {"eps":32.0 / 255.0, "clip_min": -1.0, "clip_max": 1.0}
 
-            # fgsm_model =  MomentumIterativeMethod(model,sess)
-            # attack_params = {"eps":32.0 / 255.0, "clip_min": -1.0, "clip_max": 1.0}
-            # x_adv = fgsm_model.generate(x_input, **attack_params)  #生成方差
-            #
-            # saver = tf.train.Saver(slim.get_model_variables())
-            # saver.restore(sess, FLAGS.checkpoint_path)
+            x_adv_0 = model_1.generate(x_input, **attack_params)  #生成方差
+            x_adv_1 = model_2.generate(x_adv_0, **attack_params)
 
+            saver = tf.train.Saver(slim.get_model_variables())
+            saver.restore(sess, FLAGS.checkpoint_path)
             for filenames, images in load_images(FLAGS.input_dir, batch_shape):
-                #adv_images = sess.run(x_adv, feed_dict={x_input: images})
-
-                m = TensorflowModel(
-                    sess,
-                    images,
-                    None,
-                    None,
-                    None,
-                    bounds=(0, 255),
-                    channel_axis=3,
-                    preprocess=None)
-                adv_images = JSMA()       # 生成的图片
-
+                adv_images = sess.run(x_adv_1, feed_dict={x_input: images})
                 save_images(adv_images, filenames, FLAGS.output_dir)
 
 
