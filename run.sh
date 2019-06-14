@@ -21,7 +21,7 @@ python angran_attack.py \
   --output_dir="${TMP_OUTPUT_DIR_1}" \
   --checkpoint_path=./models/inception_v1/inception_v1.ckpt
 
-python attack.py \
+python angran_attack.py \
   --input_dir="${TMP_OUTPUT_DIR_1}" \
   --output_dir="${OUTPUT_DIR}" \
   --checkpoint_path=./models/inception_v1/inception_v1.ckpt
