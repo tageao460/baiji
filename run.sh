@@ -11,9 +11,9 @@
 INPUT_DIR=$1
 OUTPUT_DIR=$2
 
-sh merge inception_v3.ckpt
+sh merge resnet_v1_50.ckpt
 
 python attack.py \
   --input_dir="${INPUT_DIR}" \
   --output_dir="${OUTPUT_DIR}" \
-  --checkpoint_path=inception_v3.ckpt
+  --checkpoint_path=resnet_v1_50.ckpt
