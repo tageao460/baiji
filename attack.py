@@ -82,13 +82,13 @@ class InceptionModel(Model):
             _, end_points = resnet_v1.resnet_v1_50(
                 x_input, num_classes=self.nb_classes)
         self.built = True
-        self.logits = end_points['Logits']
+ #       self.logits = end_points['Logits']
         # Strip off the extra reshape op at the output
         self.probs = end_points['predictions'].op.inputs[0]
-        if return_logits:
-            return self.logits
-        else:
-            return self.probs
+  #      if return_logits:
+#            return self.logits
+ #       else:
+        return self.probs
 
     def get_logits(self, x_input):
         return self(x_input, return_logits=True)
