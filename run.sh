@@ -16,12 +16,12 @@ TMP_OUTPUT_DIR_2=tmp_output.2
 mkdir -p $TMP_OUTPUT_DIR_1
 mkdir -p $TMP_OUTPUT_DIR_2
 
-python attack.py \
+python angran_attack.py \
   --input_dir="${INPUT_DIR}" \
   --output_dir="${TMP_OUTPUT_DIR_1}" \
   --checkpoint_path=./models/inception_v1/inception_v1.ckpt
 
-python angran_attack.py \
+python attack.py \
   --input_dir="${TMP_OUTPUT_DIR_1}" \
   --output_dir="${OUTPUT_DIR}" \
   --checkpoint_path=./models/inception_v1/inception_v1.ckpt
