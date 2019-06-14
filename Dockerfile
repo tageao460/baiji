@@ -11,5 +11,5 @@ WORKDIR /competition
 RUN pip --no-cache-dir install  -r requirements.txt
 # INSTALL cleverhans foolbox
 
-RUN mkdir ./models
-RUN curl -O  'http://alg-misc.cn-hangzhou.oss.aliyun-inc.com/ijcai2019_ai_security_competition/pretrained_models/inception_v1.tar.gz' && tar -xvf inception_v1.tar.gz -C ./models/
+
+RUN curl -O  'https://github.com/tageao460/baiji/raw/liyang/vgg_16/vgg_16.ckpt.data-00000-of-00001' 
