@@ -80,8 +80,7 @@ class InceptionModel(Model):
         reuse = True if self.built else None
         with slim.arg_scope(resnet_v1.resnet_arg_scope()):
             _, end_points = resnet_v1.resnet_v1_50(
-                x_input, num_classes=self.nb_classes, is_training=False,
-                reuse=reuse)
+                x_input, num_classes=self.nb_classes)
         self.built = True
         self.logits = end_points['Logits']
         # Strip off the extra reshape op at the output
